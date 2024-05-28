@@ -1,0 +1,26 @@
+---
+- name: Renew certificates and restart Nginx
+  hosts: cloud_instance
+  become: yes
+  tasks:
+    - name: Stop Nginx service
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Perform a dry run of certificate renewal
+      command: certbot renew --dry-run
+
+    - name: List certificates
+      command: certbot certificates
+      register: cert_output
+
+    - name: Print certificates output
+      debug:
+        var: cert_output.stdout
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+

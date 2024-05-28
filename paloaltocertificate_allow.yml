@@ -1,0 +1,26 @@
+---
+- name: Testing the security rule
+  hosts: firewall
+  vars_files:
+    - visu/device.yml
+  connection: local
+  tasks:
+    - name: Modify the rule that uses security profiles
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ device }}'
+        rule_name: 'Block_from_unapproved_countries'
+        source_zone: ['WAN']
+        source_ip:
+          - IN
+          - AE
+          - LK
+        negate_source: true
+        source_user: ['any']
+        destination_zone: ['LAN']
+        log_start: false
+        log_end: true
+        action: 'allow'
+
+    - name: Commit only policy and object changes on firewall
+      paloaltonetworks.panos.panos_commit_firewall:
+        provider: '{{ device }}'
