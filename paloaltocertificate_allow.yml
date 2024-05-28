@@ -1,6 +1,6 @@
 ---
 - name: Testing the security rule
-  hosts: firewall
+  hosts: localhost
   vars_files:
     - visu/device.yml
   connection: local
